@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CRE Brokerage, Decoded — Alchemy Wealth Builders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#081428;
+    --navy:#0E2745;
+    --navy-mid:#153860;
+    --navy-light:#1F4C7C;
+    --gold:#C9A052;
+    --gold-light:#DBBA7C;
+    --gold-deep:#A87F38;
+    --white:#FFFFFF;
+    --off:#E9EEF5;
+    --muted:rgba(233,238,245,0.6);
+    --hair:rgba(201,160,82,0.35);
+    --hair-blue:rgba(120,168,222,0.28);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#04070D;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Poppins',sans-serif;
+    padding:28px 12px;
+  }
+  .app{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+
+  .brandbar{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--gold);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;}
+
+  .progress{display:flex;gap:5px;width:100%;}
+  .progress .seg{flex:1;height:2.5px;background:rgba(233,238,245,0.14);border-radius:2px;overflow:hidden;}
+  .progress .seg .fill{height:100%;width:0%;background:var(--gold);transition:width .25s ease;}
+
+  .frame{
+    position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;border-radius:6px;
+    box-shadow:0 30px 70px -18px rgba(0,0,0,0.9), 0 0 0 1px var(--hair-blue);
+    background:var(--navy-deep);
+  }
+  .track{display:flex;height:100%;transition:transform .45s cubic-bezier(.65,0,.35,1);touch-action:pan-y;}
+
+  .slide{
+    flex:0 0 100%;height:100%;position:relative;color:var(--off);
+    padding:30px 26px 22px;display:flex;flex-direction:column;overflow:hidden;
+    text-align:center;
+    background:linear-gradient(165deg, #0C2242 0%, #0A1C38 45%, #060F20 100%);
+  }
+  /* fine gold "network" dot-grid over the navy base */
+  .slide::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(rgba(201,160,82,0.32) 1px, transparent 1.5px);
+    background-size:24px 24px;
+    background-position:-6px -6px;
+  }
+  /* skyline silhouette in gold + soft blue glow + vignette */
+  .slide::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(120% 85% at 50% 100%, rgba(6,15,32,0) 0%, rgba(6,15,32,0.55) 55%, rgba(4,10,22,0.95) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 90'><g fill='%23C9A052' fill-opacity='0.42'><rect x='0' y='45' width='20' height='45'/><rect x='22' y='25' width='16' height='65'/><rect x='40' y='55' width='24' height='35'/><rect x='66' y='15' width='14' height='75'/><rect x='82' y='40' width='20' height='50'/><rect x='104' y='30' width='18' height='60'/><rect x='124' y='50' width='26' height='40'/><rect x='152' y='10' width='16' height='80'/><rect x='170' y='42' width='22' height='48'/><rect x='194' y='28' width='18' height='62'/><rect x='214' y='48' width='24' height='42'/><rect x='240' y='20' width='16' height='70'/><rect x='258' y='44' width='20' height='46'/><rect x='280' y='34' width='26' height='56'/><rect x='308' y='12' width='14' height='78'/><rect x='324' y='46' width='20' height='44'/><rect x='346' y='26' width='18' height='64'/><rect x='366' y='50' width='22' height='40'/><rect x='390' y='38' width='10' height='52'/></g></svg>") bottom center / 100% 40% no-repeat,
+      radial-gradient(65% 45% at 50% 0%, rgba(79,140,214,0.22), transparent 70%);
+  }
+
+  .content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;min-height:0;align-items:center;}
+
+  .kicker{
+    font-family:'Abril Fatface',serif;
+    color:var(--white);
+    font-size:16px;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    line-height:1.3;
+    margin:2px 0 10px;
+  }
+  h1.headline, h2.headline{
+    font-family:'Abril Fatface',serif;
+    color:var(--gold);
+    font-weight:400;
+    font-size:24px;
+    line-height:1.22;
+    margin:0 0 14px;
+  }
+  h1.headline{font-size:26px;}
+  p.body{
+    font-size:13px;
+    line-height:1.65;
+    color:var(--off);
+    margin:0 0 8px;
+    max-width:320px;
+  }
+  p.body b{color:var(--white);font-weight:700;}
+
+  .btn-gold{
+    display:inline-block;
+    background:linear-gradient(135deg,var(--gold-light),var(--gold) 60%,var(--gold-deep));
+    color:#1C1408;
+    font-family:'Poppins',sans-serif;
+    font-weight:800;
+    font-size:12.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:14px 22px;
+    border:none;
+    cursor:pointer;
+    width:100%;
+    max-width:280px;
+  }
+
+  .foot{position:relative;z-index:2;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:auto;padding-top:10px;}
+
+  /* COVER */
+  .cover .content{justify-content:center;}
+  .swipe-cue{margin-top:16px;font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .arrow-bounce{display:inline-block;animation:bounceX 1.4s infinite;}
+  @keyframes bounceX{0%,100%{transform:translateX(0);}50%{transform:translateX(6px);}}
+
+  /* handshake / rep diagram */
+  .rep-diagram{display:flex;align-items:center;justify-content:center;gap:14px;margin:10px 0 6px;}
+  .rep-box{background:rgba(31,76,124,0.4);border:1px solid var(--hair-blue);padding:10px 14px;font-size:10.5px;font-weight:700;color:var(--off);}
+  .rep-arrow{font-size:16px;color:var(--gold);}
+  .broker-icon{font-size:34px;line-height:1;}
+  .diagram-caption{color:var(--muted);font-size:10.5px;margin-top:8px;}
+
+  /* split cards — navy body, gold hairline */
+  .split{display:flex;gap:10px;margin-top:8px;width:100%;}
+  .split-card{flex:1;background:rgba(31,76,124,0.32);border:1px solid var(--hair);padding:14px 10px;text-align:left;}
+  .split-card .tag{font-size:9px;letter-spacing:1.5px;color:var(--gold);font-weight:700;text-transform:uppercase;margin-bottom:6px;text-align:center;}
+  .split-card h3{font-family:'Abril Fatface',serif;font-weight:400;font-size:14px;margin:0 0 8px;color:var(--white);text-align:center;}
+  .split-card ul{margin:0;padding-left:14px;font-size:10.5px;line-height:1.6;color:var(--off);}
+
+  /* specialty grid */
+  .specialty-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;width:100%;}
+  .spec-card{background:rgba(31,76,124,0.32);border:1px solid var(--hair);padding:12px 10px;text-align:left;}
+  .spec-card .ic{font-size:18px;margin-bottom:6px;}
+  .spec-card b{font-family:'Poppins',sans-serif;font-weight:700;font-size:11.5px;color:var(--white);display:block;margin-bottom:3px;}
+  .spec-card span{font-size:9.5px;color:var(--off);line-height:1.4;}
+
+  /* commission math */
+  .math-box{
+    margin-top:12px;background:rgba(31,76,124,0.3);border:1px solid var(--hair);padding:12px 14px;
+    font-size:11.5px;line-height:1.9;color:var(--off);max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .4s ease, opacity .3s ease;width:100%;text-align:left;
+  }
+  .math-box.open{max-height:220px;opacity:1;}
+  .math-box .row{display:flex;justify-content:space-between;}
+  .math-box .row.total{border-top:1px dashed var(--hair);margin-top:4px;padding-top:6px;font-weight:700;color:var(--gold-light);}
+  .btn-outline{
+    background:none;border:1.5px solid var(--gold);color:var(--gold);
+    font-family:'Poppins',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;
+    padding:11px 18px;cursor:pointer;margin-top:4px;
+  }
+
+  /* timeline */
+  .timeline{position:relative;margin-top:12px;width:100%;text-align:left;padding-left:4px;}
+  .tl-item{display:flex;gap:12px;margin-bottom:13px;position:relative;}
+  .tl-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0;position:relative;z-index:1;}
+  .tl-line{position:absolute;left:3.5px;top:13px;bottom:-13px;width:1px;background:var(--hair-blue);}
+  .tl-item:last-child .tl-line{display:none;}
+  .tl-text b{font-size:12px;font-family:'Poppins',sans-serif;font-weight:700;display:block;margin-bottom:2px;color:var(--white);}
+  .tl-text span{font-size:10.5px;color:var(--off);line-height:1.4;}
+
+  /* flip cards */
+  .flip-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;width:100%;flex:1;}
+  .flip-card{perspective:1000px;min-height:88px;cursor:pointer;}
+  .flip-inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d;}
+  .flip-card.flipped .flip-inner{transform:rotateY(180deg);}
+  .flip-face{position:absolute;inset:0;backface-visibility:hidden;padding:10px;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--hair);}
+  .flip-front{background:rgba(31,76,124,0.32);}
+  .flip-front b{font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:700;color:var(--white);}
+  .flip-front span{font-size:8.5px;color:var(--gold);letter-spacing:0.6px;text-transform:uppercase;font-weight:700;margin-top:3px;}
+  .flip-back{background:linear-gradient(120deg,var(--gold-light),var(--gold));color:#1C1408;transform:rotateY(180deg);font-size:10px;line-height:1.4;font-weight:500;}
+
+  /* checklist */
+  .flag-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;width:100%;text-align:left;}
+  .flag-item{display:flex;gap:10px;align-items:flex-start;background:rgba(31,76,124,0.22);border-left:3px solid var(--gold);padding:9px 11px;font-size:10.5px;line-height:1.4;}
+  .flag-item .ic{font-size:12px;margin-top:1px;}
+  .flag-item b{font-family:'Poppins',sans-serif;font-weight:700;font-size:11px;display:block;color:var(--white);}
+  .flag-item span{color:var(--off);}
+
+  /* controls */
+  .controls{display:flex;align-items:center;justify-content:space-between;width:100%;}
+  .navbtn{background:rgba(31,76,124,0.4);border:1px solid var(--hair-blue);color:var(--off);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .navbtn:active{transform:scale(0.92);}
+  .dots{display:flex;gap:6px;}
+  .dots button{width:6px;height:6px;border-radius:50%;background:rgba(233,238,245,0.22);border:none;cursor:pointer;padding:0;transition:background .2s, width .2s;}
+  .dots button.active{background:var(--gold);width:16px;border-radius:4px;}
+  .hint{font-size:9.5px;color:rgba(233,238,245,0.35);letter-spacing:0.8px;text-transform:uppercase;}
+
+  .cta-link{text-decoration:none;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brandbar">Alchemy Wealth Builders</div>
+  <div class="progress" id="progress"></div>
+
+  <div class="frame" id="frame">
+    <div class="track" id="track">
+
+      <!-- 1 COVER -->
+      <div class="slide cover">
+        <div class="content">
+          <div class="kicker">CRE Brokerage, Decoded</div>
+          <h1 class="headline">The Broker You Choose Can Cost You — Or Make You — Six Figures On One Deal.</h1>
+          <p class="body">Here's what commercial real estate brokers actually do, how they get paid, and what to ask before you sign anything.</p>
+          <div class="swipe-cue">Swipe To Learn How <span class="arrow-bounce">→</span></div>
+        </div>
+        <div class="foot">Sheet 01 / 09</div>
+      </div>
+
+      <!-- 2 WHAT IS A CRE BROKER -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">The Basics</div>
+          <h2 class="headline">What Does A CRE Broker Actually Do?</h2>
+          <p class="body">A licensed professional who represents buyers, sellers, landlords, or tenants in commercial property transactions.</p>
+          <p class="body">They <b>source deals, run comps, negotiate terms</b>, and manage the paperwork that gets a transaction to the closing table.</p>
+          <div class="rep-diagram">
+            <div class="rep-box">Buyer /<br>Tenant</div>
+            <div class="rep-arrow">⇄</div>
+            <div class="broker-icon">🤝</div>
+            <div class="rep-arrow">⇄</div>
+            <div class="rep-box">Seller /<br>Landlord</div>
+          </div>
+          <div class="diagram-caption">The broker sits in the middle — but they only represent one side.</div>
+        </div>
+        <div class="foot">Sheet 02 / 09</div>
+      </div>
+
+      <!-- 3 LISTING VS BUYER REP -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">Know The Players</div>
+          <h2 class="headline">Listing Agent vs. Buyer's Rep</h2>
+          <div class="split">
+            <div class="split-card">
+              <div class="tag">Sell-Side</div>
+              <h3>Listing Agent</h3>
+              <ul>
+                <li>Represents the seller/landlord</li>
+                <li>Markets the property</li>
+                <li>Negotiates for their client's best price</li>
+                <li>Typically paid by the seller</li>
+              </ul>
+            </div>
+            <div class="split-card">
+              <div class="tag">Buy-Side</div>
+              <h3>Buyer's / Tenant's Rep</h3>
+              <ul>
+                <li>Represents the buyer/tenant</li>
+                <li>Sources off-market &amp; listed deals</li>
+                <li>Negotiates favorable terms for you</li>
+                <li>Often paid via commission split</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="foot">Sheet 03 / 09</div>
+      </div>
+
+      <!-- 4 SPECIALTIES -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">Not All Brokers Are The Same</div>
+          <h2 class="headline">Four Core Specialties</h2>
+          <div class="specialty-grid">
+            <div class="spec-card"><div class="ic">🏢</div><b>Investment Sales</b><span>Buying &amp; selling income-producing properties.</span></div>
+            <div class="spec-card"><div class="ic">🔑</div><b>Leasing</b><span>Filling office, retail &amp; industrial space for landlords.</span></div>
+            <div class="spec-card"><div class="ic">📋</div><b>Tenant Rep</b><span>Finding space for businesses that need to lease.</span></div>
+            <div class="spec-card"><div class="ic">📊</div><b>Capital Markets</b><span>Arranging debt &amp; equity to finance a deal.</span></div>
+          </div>
+          <p class="body" style="margin-top:12px;font-size:11px;">A broker who's great at leasing isn't necessarily the right fit for a $10M investment sale — ask what they specialize in.</p>
+        </div>
+        <div class="foot">Sheet 04 / 09</div>
+      </div>
+
+      <!-- 5 COMMISSION -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">Follow The Commission</div>
+          <h2 class="headline">How Brokers Get Paid</h2>
+          <p class="body">On a sale, commission is typically <b>3–6% of the purchase price</b> — usually split between the listing broker and the buyer's broker.</p>
+          <button class="btn-outline" onclick="toggleMath(this)">Tap To See The Math ↓</button>
+          <div class="math-box" id="mathbox">
+            <div class="row"><span>Sale price</span><span>$5,000,000</span></div>
+            <div class="row"><span>Commission (5%)</span><span>$250,000</span></div>
+            <div class="row"><span>Split 50/50</span><span>listing / buyer's broker</span></div>
+            <div class="row total"><span>Each broker earns</span><span>$125,000</span></div>
+          </div>
+        </div>
+        <div class="foot">Sheet 05 / 09</div>
+      </div>
+
+      <!-- 6 DEAL TIMELINE -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">From LOI To Closing</div>
+          <h2 class="headline">Anatomy Of A CRE Deal</h2>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div>
+              <div class="tl-text"><b>Letter of Intent (LOI)</b><span>Non-binding terms are proposed to open negotiations.</span></div>
+            </div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div>
+              <div class="tl-text"><b>Due Diligence</b><span>Financials, inspections, and title are verified.</span></div>
+            </div>
+            <div class="tl-item"><div class="tl-dot"></div><div class="tl-line"></div>
+              <div class="tl-text"><b>Purchase &amp; Sale Agreement</b><span>The binding contract is signed by both parties.</span></div>
+            </div>
+            <div class="tl-item"><div class="tl-dot"></div>
+              <div class="tl-text"><b>Closing</b><span>Financing finalizes, funds transfer, keys change hands.</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">Sheet 06 / 09</div>
+      </div>
+
+      <!-- 7 QUESTIONS TO ASK -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">Vet Your Broker</div>
+          <h2 class="headline">Ask These Before You Sign</h2>
+          <div class="flag-list">
+            <div class="flag-item"><span class="ic">•</span><div><b>Who do you represent?</b><span>You exclusively, or is this dual agency?</span></div></div>
+            <div class="flag-item"><span class="ic">•</span><div><b>What's your track record?</b><span>Closed deals in this exact asset class, not just listings.</span></div></div>
+            <div class="flag-item"><span class="ic">•</span><div><b>Do you hold a specialty designation?</b><span>CCIM or SIOR signals deeper technical training.</span></div></div>
+            <div class="flag-item"><span class="ic">•</span><div><b>What's the full fee structure?</b><span>Get it in writing before you sign a rep agreement.</span></div></div>
+          </div>
+        </div>
+        <div class="foot">Sheet 07 / 09</div>
+      </div>
+
+      <!-- 8 GLOSSARY -->
+      <div class="slide">
+        <div class="content">
+          <div class="kicker">Speak The Language</div>
+          <h2 class="headline">Tap A Term To Flip It</h2>
+          <div class="flip-grid">
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-face flip-front"><b>LOI</b><span>Tap →</span></div>
+                <div class="flip-face flip-back">Letter of Intent — a non-binding outline of proposed deal terms.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-face flip-front"><b>Due Diligence</b><span>Tap →</span></div>
+                <div class="flip-face flip-back">The window to verify financials, condition, and title before closing.</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-face flip-front"><b>NNN Lease</b><span>Tap →</span></div>
+                <div class="flip-face flip-back">Tenant pays rent plus taxes, insurance &amp; maintenance — "triple net."</div>
+              </div>
+            </div>
+            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+              <div class="flip-inner">
+                <div class="flip-face flip-front"><b>Comps</b><span>Tap →</span></div>
+                <div class="flip-face flip-back">Comparable sales/leases used to justify a property's asking price.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="foot">Sheet 08 / 09</div>
+      </div>
+
+      <!-- 9 CTA — mirrors the eBook ad creative -->
+      <div class="slide cta">
+        <div class="content">
+          <div class="kicker" style="font-size:20px;">Get Our Free eBook Today!</div>
+          <h1 class="headline" style="font-size:22px;">Exclusive eBook Reveals Passive Real Estate Investment Strategies for High-Net-Worth Professionals.</h1>
+          <p class="body">Discover the proven blueprint for high-net-worth professionals to <b>build long-term equity</b> and generate <b>consistent, tax-efficient passive income</b> through smart real estate syndications.</p>
+          <a class="cta-link" href="https://alchemywealthbuilders.com/ebook" target="_blank" rel="noopener noreferrer">
+            <button class="btn-gold" style="margin-top:14px;">Get Your Copy Now</button>
+          </a>
+        </div>
+        <div class="foot">Sheet 09 / 09</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="navbtn" id="prevBtn" aria-label="Previous slide">‹</button>
+    <div class="dots" id="dots"></div>
+    <button class="navbtn" id="nextBtn" aria-label="Next slide">›</button>
+  </div>
+  <div class="hint">Swipe, tap dots, or use ← → keys</div>
+</div>
+
+<script>
+  const track = document.getElementById('track');
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  const progressWrap = document.getElementById('progress');
+  const total = slides.length;
+  let current = 0;
+
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('button');
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    const fill = document.createElement('div');
+    fill.className = 'fill';
+    seg.appendChild(fill);
+    progressWrap.appendChild(seg);
+  }
+
+  function render() {
+    track.style.transform = `translateX(-${current * 100}%)`;
+    [...dotsWrap.children].forEach((d, i) => d.classList.toggle('active', i === current));
+    [...progressWrap.children].forEach((seg, i) => {
+      seg.querySelector('.fill').style.width = i <= current ? '100%' : '0%';
+    });
+  }
+
+  function goTo(i) {
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('nextBtn').addEventListener('click', () => goTo(current + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  let startX = 0, isDragging = false;
+  const frame = document.getElementById('frame');
+  frame.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; isDragging = true; }, {passive:true});
+  frame.addEventListener('touchend', (e) => {
+    if (!isDragging) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (dx > 50) goTo(current - 1);
+    else if (dx < -50) goTo(current + 1);
+    isDragging = false;
+  }, {passive:true});
+
+  function toggleMath(btn) {
+    const box = document.getElementById('mathbox');
+    box.classList.toggle('open');
+    btn.textContent = box.classList.contains('open') ? 'Hide The Math ↑' : 'Tap To See The Math ↓';
+  }
+
+  render();
+</script>
+</body>
+</html>
